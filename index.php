@@ -5,10 +5,18 @@ require_once __DIR__ . '/functions.php';
 $app = new Silex\Application();
 $app['debug'] = true;
 
-$DB_HOST = envar('uri', 'mongodb://127.0.0.1:27017');
 $DB_NAME = envar('database_name', 'mongodb');
 $DB_USERNAME = envar('username', 'mongodb');
 $DB_PASSWORD = envar('password', 'mongodb');
+
+if(isset($_ENV['database_service_name'])) {
+    $DB_SERVICE_NAME = $_ENV['database_service_name'];
+    $DB_HOST = "mongodb://";
+    $DB_HOST .= $DB_SERVICE_NAME;
+    $DB_HOST .= ":27017";
+} else {
+    $DB_HOST = envar('uri', 'mongodb://127.0.0.1:27017');
+}
 
 $DB_URI = str_replace('mongodb://', "mongodb://$DB_USERNAME:$DB_PASSWORD@", $DB_HOST);
 $DB_URI .= "/$DB_NAME";
